@@ -1,0 +1,79 @@
+---
+title: "Lab3_Part1"
+author: "Haoxuan Cai"
+date: "10/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Part I
+
+
+```{r}
+happy <- readRDS("HAPPY.rds")
+head(happy)
+```
+
+
+##1
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+
+
+```{r}
+happy[happy=="IAP"|happy=="DK"|happy=="NA"] <- NA
+head(happy)
+```
+
+
+
+##2
+
+
+```{r}
+happy$AGE[happy$AGE=="89 OR OLDER"] <- 89
+happy$AGE <- as.numeric(happy$AGE)
+head(happy)
+str(happy)
+
+```
+```{r}
+happy$HAPPY <- as.factor(happy$HAPPY)
+happy$SEX <- as.factor(happy$SEX)
+happy$MARITAL <- as.factor(happy$MARITAL)
+happy$DEGREE <- as.factor(happy$DEGREE)
+happy$FINRELA <- as.factor(happy$FINRELA)
+happy$HEALTH <- as.factor(happy$HEALTH)
+happy$PARTYID <- as.factor(happy$PARTYID)
+happy$POLVIEWS <- as.factor(happy$POLVIEWS)
+happy$YEAR <- as.numeric(happy$YEAR)
+head(happy)
+str(happy)
+```
+
+
+##3
+
+
+```{r}
+happy <- happy %>%
+  mutate(HAPPY = factor(HAPPY, levels=c("NOT TOO HAPPY", "PRETTY HAPPY", "VERY HAPPY"))) %>%
+  mutate(DEGREE = factor(DEGREE, levels=c("LT HIGH SCHOOL", "HIGH SCHOOL", "JUNIOR COLLEGE", "BACHELOR", "GRADUATE" ))) %>%
+  mutate(SEX = factor(SEX, levels=c("FEMALE", "MALE"))) %>%
+  mutate(FINRELA = factor(FINRELA, levels=c("FAR BELOW AVERAGE", "BELOW AVERAGE", "AVERAGE", "ABOVE AVERAGE", "FAR ABOVE AVERAGE"))) %>%
+  mutate(HEALTH = factor(HEALTH, levels=c("POOR", "FAIR", "GOOD", "EXCELLENT"))) %>%
+  mutate(PARTYID = factor(PARTYID, levels=c("STRONG REPUBLICAN", "NOT STR REPUBLICAN", "IND,NEAR REP", "INDEPENDENT", "IND,NEAR DEM", "NOT STR DEMOCRAT", "STRONG DEMOCRAT", "OTHER PARTY"))) %>%
+  mutate(POLVIEWS = factor(POLVIEWS, levels=c("EXTRMLY CONSERVATIVE", "SLGHTLY CONSERVATIVE", "CONSERVATIVE", "MODERATE", "LIBERAL", "SLIGHTLY LIBERAL", "EXTREMELY LIBERAL")))
+subset_marital<- aggregate(AGE ~ MARITAL, data = happy, mean) %>%
+  arrange(AGE)
+happy <- mutate(happy, MARITAL = factor(MARITAL, as.vector(subset_marital$MARITAL)))
+sapply(happy, levels)
+```
+
